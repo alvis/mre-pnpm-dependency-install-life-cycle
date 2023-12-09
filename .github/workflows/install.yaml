@@ -1,0 +1,29 @@
+name: Install Dependencies
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  install:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install Dependencies
+        run: pnpm install
+      - name: List files under canvas folder
+        run: ls -al packages/package1/node_modules/canvas/build
+      - name: Reinstall Dependencies
+        run: rm -rf **/node_modules && pnpm install
+      - name: List files under canvas folder again
+        run: ls -al packages/package1/node_modules/canvas/build
